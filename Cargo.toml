@@ -1,0 +1,18 @@
+[package]
+name = "actix-middleware-discord-interactions"
+version = "0.1.0"
+edition = "2021"
+description = "A middleware designed to reduce the overhead needed when working with discord interactions."
+license = "MIT OR Apache-2.0"
+keywords = ["actix-web-middleware", "actix-middleware", "ed25519", "authentication"]
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-web = "4"
+futures-util = "0"
+
+
+[badges]
+maintenance = { status = "passively-maintained"}
