@@ -1,6 +1,5 @@
 use actix_middleware_ed25519_authentication::{authenticate_request, MiddlewareData};
 use actix_web::{
-    cookie::time::Time,
     dev::{forward_ready, Service, ServiceRequest, ServiceResponse, Transform},
     error::ErrorUnauthorized,
     Error,
