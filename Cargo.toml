@@ -12,7 +12,7 @@ publish = false
 [dependencies]
 actix-web = "4"
 futures-util = "0"
-actix-middleware-ed25519-authentication = "0.2.1"
+actix-middleware-ed25519-authentication = "0.2.2"
 
 [badges]
 maintenance = { status = "passively-maintained"}

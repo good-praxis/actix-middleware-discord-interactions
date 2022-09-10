@@ -1,12 +1,16 @@
+use actix_middleware_ed25519_authentication::{authenticate_request, MiddlewareData};
 use actix_web::{
     dev::{forward_ready, Service, ServiceRequest, ServiceResponse, Transform},
+    error::ErrorUnauthorized,
     Error,
 };
 use futures_util::future::LocalBoxFuture;
 use futures_util::FutureExt;
 use std::{future::Ready, pin::Pin, rc::Rc};
 
-pub struct DiscordInteractions {}
+pub struct DiscordInteractions {
+    pub public_key: String,
+}
 
 impl<S, B> Transform<S, ServiceRequest> for DiscordInteractions
 where
@@ -23,12 +27,14 @@ where
     fn new_transform(&self, service: S) -> Self::Future {
         std::future::ready(Ok(DiscordInteractionsMiddleware {
             service: Rc::new(service),
+            public_key: self.public_key.clone(),
         }))
     }
 }
 
 pub struct DiscordInteractionsMiddleware<S> {
     service: Rc<S>,
+    public_key: String,
 }
 
 impl<S, B> Service<ServiceRequest> for DiscordInteractionsMiddleware<S>
@@ -53,7 +59,15 @@ where
         >,
     > {
         let srv = self.service.clone();
+        let key = self.public_key.clone();
+
         async move {
+            // Authenticate
+            let result = authenticate_request(&mut req, &MiddlewareData::new(&key)).await;
+            if result.is_err() {
+                return Err(ErrorUnauthorized("Unauthorized"));
+            }
+
             let fut = srv.call(req);
             let res = fut.await?;
             Ok(res)
